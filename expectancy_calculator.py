@@ -15,6 +15,7 @@ def calculate_kelly_criterion(win_probability, win_reward):
 
 # Page headers
 st.set_page_config(page_title="Expectancy Calculator", layout="wide", page_icon="📈")
+
 st.title("Expectancy and Kelly Criterion Calculator")
 st.markdown("""
 **Calculate your trading strategy's expected performance**  
@@ -24,16 +25,15 @@ st.markdown("""
 # Sidebar with information
 with st.sidebar:
     st.header("About Expectancy")
+    st.subheader("Expectancy Formula")
     st.markdown("""
-    **Expectancy Formula:**
     ```
-    (Win% × Avg Win) - (Loss% × Avg Loss)
+    E = (W × R) - (1 - W)*1
     ```
-    Where:
-    - **Win%** = Probability of winning trades
-    - **Avg Win** = Profit in multiples of risk (R)
-    - **Loss%** = 1 - Win%
-    - **Avg Loss** = 1R (by definition)
+    - **W** = Win probability (decimal, 0-1)
+    - **R** = Reward to Risk ratio (multiple of risk)
+    - **1-W** = Loss probability
+    - **1** = Avg Loss (always 1R)
     """)
 
     st.subheader("Kelly Criterion Formula:")
@@ -42,8 +42,8 @@ with st.sidebar:
         Kelly % = W - [(1 - W) / R]
         ```
         Where:
-        - **W** = Win probability (decimal)
-        - **R** = Win/loss ratio (reward:risk)
+        - **W** = Win probability (decimal, 0-1)
+        - **R** = Reward to Risk ratio (multiple of risk)
         """)
     st.markdown("---")
     st.markdown("For More Tools Visit: \n\n"
@@ -116,6 +116,7 @@ with col2:
                 unsafe_allow_html=True)
 
 # Kelly Criterion section
+st.markdown("#")
 st.header("⚖️ Risk Management - Position Sizing")
 kelly_container = st.container()
 
@@ -162,6 +163,7 @@ with col4:
 
 
 # Visualisation section
+st.markdown("#")
 st.header("📈 Expectancy Analysis")
 st.markdown("""
 **Visualizing how win rate and Reward to Risk ratio relate for the same expectancy**  
@@ -169,8 +171,8 @@ st.markdown("""
 """)
 
 # Present data in the container with tabs - one for chart, one for data table
-tab1, tab2 = st.tabs(["Interactive Chart", "Data Table"])
-with tab1:
+chart_container = st.container()
+with chart_container:
     # Generate data - for each win rate 1-99 find R required to maintain expectancy
     if expectancy > 0:
         win_rates = list(range(5, 100))
@@ -195,7 +197,7 @@ with tab1:
                 mode='lines',
                 name='Reward to Risk Ratio',
                 line=dict(color='#1f77b4', width=3),
-                hovertemplate="Win Rate: %{x}%<br>Required R: %{y:.2f}<extra></extra>",
+                hovertemplate="Required R: %{y:.2f}<extra></extra>",
             ),
             secondary_y=False,
         )
@@ -206,9 +208,9 @@ with tab1:
                 x=win_rates,
                 y=kelly_values,
                 mode='lines',
-                name='Kelly %',
+                name='Kelly Criterion %',
                 line=dict(color='#ff7f0e', width=3, dash='dot'),
-                hovertemplate="Win Rate: %{x}%<br>Kelly: %{y:.2f}%<extra></extra>",
+                hovertemplate="Kelly Criterion %: %{y:.2f}%<extra></extra>",
             ),
             secondary_y=True
         )
@@ -233,7 +235,9 @@ with tab1:
             template='plotly_white'
         )
 
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, config={'displayModeBar': False}, use_container_width=True)
+    else:
+        st.warning("This expectancy value is not mathematically possible with positive risk:reward ratios")
 
 # Explanation section
 with st.expander("💡 How to interpret these results"):
