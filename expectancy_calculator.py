@@ -1,11 +1,19 @@
 import streamlit as st
 
+
 def calculate_expectancy(win_probability, win_reward):
     return round(win_probability / 100 * win_reward - (1-win_probability/100), 2)
 
+
+def calculate_kelly_criterion(win_probability, win_reward):
+    win_decimal = win_probability / 100
+    loss_decimal = 1 - win_decimal
+    return round((win_decimal-(loss_decimal/win_reward)),4)
+
+
 # Page headers
 st.set_page_config(page_title="Expectancy Calculator", layout="wide", page_icon="📈")
-st.title("ClockTrades expectancy calculator")
+st.title("Expectancy and Kelly Criterion Calculator")
 st.markdown("""
 **Calculate your trading strategy's expected performance**  
 *Expectancy measures the average amount you can expect to win (or lose) per dollar risked*
@@ -25,10 +33,24 @@ with st.sidebar:
     - **Loss%** = 1 - Win%
     - **Avg Loss** = 1R (by definition)
     """)
+
+    st.subheader("Kelly Criterion Formula:")
+    st.markdown("""
+        ```
+        Kelly % = W - [(1 - W) / R]
+        ```
+        Where:
+        - **W** = Win probability (decimal)
+        - **R** = Win/loss ratio (reward:risk)
+        """)
     st.markdown("---")
-    st.markdown("Made by [ClockTrades](https://clocktrades.com)")
+    st.markdown("For More Tools Visit: \n\n"
+                "[ClockTrades - Free Trading Tools]"
+                "(https://clocktrades.com/free-trading-tools/)")
     st.markdown("*For educational purposes only*")
 
+
+# Expectancy Section
 
 col1, col2 = st.columns(2)
 with col1:
@@ -91,16 +113,61 @@ with col2:
                 f"Total Return: <b>{total_return}R</b></h3>",
                 unsafe_allow_html=True)
 
+# Kelly Criterion section
+st.header("⚖️ Risk Management - Position Sizing")
+kelly_container = st.container()
+
+with kelly_container:
+    kelly_percentage = calculate_kelly_criterion(win_probability_pct,win_reward_R) * 100
+    display_kelly = max(0, kelly_percentage)
+
+    if display_kelly > 20:
+        # kelly_color = 'red'
+        risk_advice = 'Aggressive'
+    elif display_kelly > 10:
+        # kelly_color = 'orange'
+        risk_advice = 'Moderately Aggressive'
+    elif display_kelly > 5:
+        # kelly_color = 'teal'
+        risk_advice = 'Moderate'
+    else:
+        # kelly_color = 'green'
+        risk_advice = 'Conservative'
+
+col3, col4 = st.columns(2)
+with col3:
+    st.subheader("Kelly Criterion")
+    st.metric(
+        "Optimal Risk",
+        f"{display_kelly:.2f}%",
+        help = "Theoretical maximum % of capital to risk per trade"
+    )
+    st.metric(
+        "Risk level",
+        risk_advice
+    )
+
+with col4:
+    st.subheader("Safer approach")
+    st.metric(
+        "Half-Kelly",
+        f"{display_kelly/2:.2f}%",
+        help = "Common recommended practice to reduce volatility"
+    )
+    st.metric("Most common recommendation",
+              "1-2%",
+              help = "Standard risk management guideline")
+
 # Explanation section
 with st.expander("💡 How to interpret these results"):
     st.markdown(f"""
     With a **{win_probability_pct}% win rate** and **{win_reward_R} : 1 reward-to-risk ratio**:
 
     - Your expectancy is **{expectancy}R** per trade
-    - This means you'll average **\${expectancy} per \$1 risked** over many trades
+    - This means you'll average **&dollar;{expectancy} per &dollar;1 risked** over many trades
     - With **{no_of_opportunities_per_period} trades per period** over **{no_of_periods} periods**:
         - Total projected return = **{total_return}R**
-        - This equals **\${total_return} per \$1 risked** overall
+        - This equals **&dollar;{total_return} per &dollar;1 risked** overall
     """)
 
     st.markdown("""
@@ -110,6 +177,21 @@ with st.expander("💡 How to interpret these results"):
     - Expectancy > 0.5 is considered excellent
     - Negative expectancy means the strategy loses money over time
     """)
+
+    st.subheader("Position Sizing")
+    st.markdown(f"""
+        For your strategy parameters:
+
+        - **Kelly Criterion** suggests risking **{display_kelly:.2f}%** of capital per trade
+        - **Half-Kelly** approach recommends **{display_kelly / 2:.2f}%** per trade
+        - Most risk managers recommend **never risking more than 1-2%** per trade
+
+        *Why the differences?*
+        - Kelly Criterion maximizes long-term growth but assumes perfect knowledge
+        - Real trading has uncertainty, so most traders use fractional Kelly
+        - Conservative sizing protects against black swan events and estimation errors
+        """)
+
 
 # Footer
 st.markdown("---")
