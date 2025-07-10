@@ -8,7 +8,7 @@ def calculate_expectancy(win_probability, win_reward):
 def calculate_kelly_criterion(win_probability, win_reward):
     win_decimal = win_probability / 100
     loss_decimal = 1 - win_decimal
-    return round((win_decimal-(loss_decimal/win_reward)),4)
+    return round((win_decimal-(loss_decimal/win_reward)), 4)
 
 
 # Page headers
@@ -118,7 +118,7 @@ st.header("⚖️ Risk Management - Position Sizing")
 kelly_container = st.container()
 
 with kelly_container:
-    kelly_percentage = calculate_kelly_criterion(win_probability_pct,win_reward_R) * 100
+    kelly_percentage = calculate_kelly_criterion(win_probability_pct, win_reward_R) * 100
     display_kelly = max(0, kelly_percentage)
 
     if display_kelly > 20:
@@ -140,7 +140,7 @@ with col3:
     st.metric(
         "Optimal Risk",
         f"{display_kelly:.2f}%",
-        help = "Theoretical maximum % of capital to risk per trade"
+        help="Theoretical maximum % of capital to risk per trade"
     )
     st.metric(
         "Risk level",
@@ -152,11 +152,11 @@ with col4:
     st.metric(
         "Half-Kelly",
         f"{display_kelly/2:.2f}%",
-        help = "Common recommended practice to reduce volatility"
+        help="Common recommended practice to reduce volatility"
     )
     st.metric("Most common recommendation",
               "1-2%",
-              help = "Standard risk management guideline")
+              help="Standard risk management guideline")
 
 # Explanation section
 with st.expander("💡 How to interpret these results"):
