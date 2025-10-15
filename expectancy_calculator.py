@@ -14,7 +14,7 @@ def calculate_kelly_criterion(win_probability, win_reward):
 
 
 # Page headers
-st.set_page_config(page_title="Expectancy Calculator", layout="wide", page_icon="📈")
+st.set_page_config(page_title="Expectancy and Kelly Criterion Calculator", layout="wide", page_icon="📈")
 
 st.title("Expectancy and Kelly Criterion Calculator")
 st.markdown("""
@@ -47,8 +47,8 @@ with st.sidebar:
         """)
     st.markdown("---")
     st.markdown("For More Tools Visit: \n\n"
-                "[ClockTrades - Free Trading Tools]"
-                "(https://clocktrades.com/free-trading-tools/)")
+                "[Markets&Manners - Free Trading Tools]"
+                "(https://marketsmanners.com/free-trading-tools/)")
     st.markdown("*For educational purposes only*")
 
 
@@ -276,5 +276,5 @@ with st.expander("💡 How to interpret these results"):
 
 # Footer
 st.markdown("---")
-st.caption("© 2025 ClockTrades.com • All calculations are theoretical and don't guarantee future results • "
+st.caption("© 2025 MarketsManners.com • All calculations are theoretical and don't guarantee future results • "
            "Risk management is essential in trading")
