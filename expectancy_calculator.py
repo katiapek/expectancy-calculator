@@ -47,8 +47,8 @@ with st.sidebar:
         """)
     st.markdown("---")
     st.markdown("For More Tools Visit: \n\n"
-                "[Markets&Manners - Free Trading Tools]"
-                "(https://marketsmanners.com/free-trading-tools/)")
+                "[Markets&Manners]"
+                "(https://marketsmanners.com)")
     st.markdown("*For educational purposes only*")
 
 
